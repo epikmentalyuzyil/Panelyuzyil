@@ -88,6 +88,8 @@ function panelMi(url) {
     '?ekran=sms', '?ekran=sms&sekme=gecmis', '?ekran=sms&uygula=1',
     '?ekran=sms&uygula=1&odeme=borclu', '?ekran=sms&uygula=1&odeme=geciken',
     '?ekran=yedek', '?ekran=tanimlar&sekme=sms',
+    '?ekran=personel', '?ekran=personel&durum=ayrilan', '?ekran=personel&durum=tum',
+    ...[1,2,3,4,5,6,7,8].map((i) => `?ekran=personel&id=${i}`),
   ].map((q) => KOK + PANEL_YOL + q);
 
   // Öncelik: 0 = ana ekran, 1 = aday/referans kartı, 2 = süzgeç, 3 = sıralama/sayfalama
