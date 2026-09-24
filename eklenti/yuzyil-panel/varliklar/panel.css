@@ -1032,11 +1032,13 @@ body.kilit-sayfa .uyari { width: min(420px, 100%); margin-inline: auto; }
 
 
 /* Maaş kontrol takvimi: 12 ay yan yana, ödenmeyen ay kırmızı. */
-.pt-takvim { display: grid; grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 6px; margin-top: 8px; }
-.pt-ay { display: flex; flex-direction: column; gap: 1px; padding: 8px 10px; border: 1px solid var(--cizgi); border-radius: 3px; background: var(--kutu); }
-.pt-ay-ad { font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: var(--yazi-2); }
-.pt-ay b { font-size: 14px; font-variant-numeric: tabular-nums; }
-.pt-ay small { font-size: 11px; color: var(--yazi-2); }
+/* KURAL: On iki ay tek satırda durur; dar ekranda sayfa değil yalnızca bu şerit kayar. */
+.pt-takvim-kap { overflow-x: auto; margin-top: 8px; padding-bottom: 2px; }
+.pt-takvim { display: grid; grid-template-columns: repeat(12, minmax(74px, 1fr)); gap: 4px; min-width: 0; }
+.pt-ay { display: flex; flex-direction: column; gap: 1px; padding: 6px 7px; border: 1px solid var(--cizgi); border-radius: 3px; background: var(--kutu); text-align: center; }
+.pt-ay-ad { font-size: 9.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--yazi-2); }
+.pt-ay b { font-size: 12.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pt-ay .pt-bos { color: var(--soluk); font-weight: 400; }
 .pt-odendi { background: #e7f5ec; border-color: #9ed3b3; }
 .pt-odendi b { color: #16673c; }
 .pt-odenmedi { background: #fbe9e7; border-color: #e3a9a2; }
@@ -1046,9 +1048,6 @@ body.kilit-sayfa .uyari { width: min(420px, 100%); margin-inline: auto; }
 .pt-ayrilma.acik { display: block; }
 .pt-sil { margin-top: 10px; color: #b3261e; border-color: #e3a9a2; }
 
-@media (max-width: 700px) {
-	.pt-takvim { grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); }
-}
 
 /* Personel kimlik şeridi: kutulara bölünmez, tek satırda akar. */
 .pt-satir { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: baseline; }

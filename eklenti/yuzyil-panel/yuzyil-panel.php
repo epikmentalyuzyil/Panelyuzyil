@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Yüzyıl Panel
  * Description:       Yüzyıl Psikoteknik Merkezi için aday, işlem, ödeme, referans ve kasa takip paneli.
- * Version:           1.8.1
+ * Version:           1.8.2
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Yüzyıl Psikoteknik Merkezi
@@ -13,7 +13,7 @@
 // KURAL: Dosyalar doğrudan açılamaz — yalnızca WordPress üzerinden çalışır.
 defined( 'ABSPATH' ) || exit;
 
-define( 'YP_SURUM', '1.8.1' );
+define( 'YP_SURUM', '1.8.2' );
 define( 'YP_DB_SURUM', '6' );
 define( 'YP_DOSYA', __FILE__ );
 define( 'YP_DIZIN', plugin_dir_path( __FILE__ ) );
