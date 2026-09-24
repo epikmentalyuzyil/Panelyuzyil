@@ -480,6 +480,7 @@ final class YP_Ekran_Kasa extends YP_Ekran {
 		if ( ! $s || $s->silindi || ! in_array( $s->kayit_turu, array( 'GELIR', 'GIDER' ), true ) || 'IADE' === $s->durum ) {
 			self::geri_don( 'Bu kayıt buradan düzenlenemez. Aday tahsilatları adayın ödeme ekranından, transferler silinip yeniden girilerek düzeltilir.', 'hata' );
 		}
+		self::personel_kaydi_mi( $s, 'düzeltilemez' );
 		$tur   = YP_Guvenlik::secim( 'kasa_turu', array( 'gelir', 'gider' ), 'gelir' );
 		$tutar = YP_Guvenlik::tutar( 'tutar' );
 		$hesap = YP_Veri::hesap( YP_Guvenlik::tamsayi( 'hesap_id' ) );
@@ -605,11 +606,32 @@ final class YP_Ekran_Kasa extends YP_Ekran {
 	}
 
 	// KURAL: Kasadan yalnızca gelir/gider/transfer silinir; aday tahsilatı adayın ödeme kartından yönetilir.
+	/**
+	 * Personel ödemesinden gelen kasa satırını korur.
+	 * KURAL: Bu satır personel kartındaki ödemenin ikizidir; buradan değiştirilirse ikisi birbirini tutmaz.
+	 * Değişiklik her zaman personel kartından yapılır, kasa satırı oradan güncellenir.
+	 */
+	private static function personel_kaydi_mi( $s, $fiil ) {
+		require_once YP_DIZIN . 'includes/class-yp-personel.php';
+		$odeme = YP_Personel::hareketin_odemesi( $s->id );
+		if ( ! $odeme ) {
+			return;
+		}
+		$kisi = YP_Personel::personel( (int) $odeme->personel_id );
+		self::geri_don(
+			'Bu satır personel ödemesinden geliyor, kasadan ' . $fiil . '. '
+				. ( $kisi ? YP_Personel::adi( $kisi ) . ' adlı personelin kartından' : 'Personel ekranından' )
+				. ' düzeltin; kasadaki karşılığı kendiliğinden güncellenir.',
+			'hata'
+		);
+	}
+
 	public static function sil() {
 		$s = YP_Veri::hareket( YP_Guvenlik::tamsayi( 'hareket_id' ) );
 		if ( ! $s || 'ADAY' === $s->kayit_turu || $s->silindi ) {
 			self::geri_don( 'Kayıt bulunamadı veya buradan silinemez.', 'hata' );
 		}
+		self::personel_kaydi_mi( $s, 'silinemez' );
 		self::tek_islemde( function () use ( $s ) {
 			YP_Veri::hareket_guncelle( $s->id, array( 'silindi' => 1, 'silme_zamani' => YP_Cekirdek::simdi(), 'silen' => YP_Cekirdek::kullanici_id() ) );
 			YP_Cekirdek::log( 'kasa', $s->id, 'silme', self::tur_etiketi( $s ) . ' silindi: ' . YP_Bicim::tl( $s->tutar ) );

@@ -169,6 +169,33 @@ final class YP_Veri {
 		return $sonuc;
 	}
 
+	/**
+	 * Hesap seçim listesi: banka adı tanımlıysa hesabın yanında yazar.
+	 * KURAL: Birden çok banka hesabı varsa hangisi olduğu seçim kutusunda görünür —
+	 * "Banka" yazan üç satır arasından doğru olanı bulmak için kart açmak gerekmez.
+	 */
+	public static function hesap_secenekleri( $sadece_aktif = true ) {
+		$hesaplar = self::hesaplar( $sadece_aktif );
+		$etiket   = array();
+		foreach ( $hesaplar as $h ) {
+			$ad    = trim( (string) $h->ad );
+			$banka = trim( (string) $h->banka_adi );
+			$etiket[ (int) $h->id ] = ( '' !== $banka && 0 !== strcasecmp( $ad, $banka ) ) ? $ad . ' — ' . $banka : $ad;
+		}
+		// KURAL: İki hesabın etiketi yine de aynı çıkarsa IBAN'ın son dört hanesi eklenir — karışmaz.
+		$sayim = array_count_values( $etiket );
+		foreach ( $hesaplar as $h ) {
+			$id = (int) $h->id;
+			if ( isset( $sayim[ $etiket[ $id ] ] ) && $sayim[ $etiket[ $id ] ] > 1 ) {
+				$iban = preg_replace( '/\s+/', '', (string) $h->iban );
+				if ( strlen( $iban ) >= 4 ) {
+					$etiket[ $id ] .= ' (…' . substr( $iban, -4 ) . ')';
+				}
+			}
+		}
+		return $etiket;
+	}
+
 	// ---- Referanslar ----------------------------------------------------
 
 	public static function referans( $id ) {

@@ -85,6 +85,21 @@ final class YP_Personel {
 		return $yillar;
 	}
 
+	/**
+	 * Bir kasa hareketi personel ödemesinden mi gelmiş?
+	 * KURAL: Kasa ekranı bu satırı düzenletmez — düzeltme personel kartından yapılır,
+	 * yoksa iki kayıt birbirinden kopar.
+	 */
+	public static function hareketin_odemesi( $hareket_id ) {
+		global $wpdb;
+		$hareket_id = (int) $hareket_id;
+		if ( ! $hareket_id ) {
+			return null;
+		}
+		$t = YP_Cekirdek::tablo( 'personel_odeme' );
+		return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$t} WHERE hareket_id = %d AND silindi = 0 LIMIT 1", $hareket_id ) ); // phpcs:ignore
+	}
+
 	// ---- Hesaplar -------------------------------------------------------
 
 	/**

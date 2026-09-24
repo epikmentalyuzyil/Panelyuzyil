@@ -645,6 +645,13 @@
 			if (!form) { return; }
 			var el = form.elements[ad];
 			if (!el) { return; }
+			// KURAL: Onay kutusu "value" ile değil "checked" ile doldurulur — yoksa hazır değerlerle
+			// açılan pencerede kutu işaretsiz kalır ve kaydedince o ayar sessizce kapanır.
+			if (el.type === 'checkbox') {
+				el.checked = (deger === '1' || deger === 'true');
+				el.dispatchEvent(new Event('change', { bubbles: true }));
+				return;
+			}
 			// KURAL: Boş veya "0" değer seçim kutusunda "Yok/Seçiniz" demektir — listeye yeni seçenek eklenmez.
 			if (el.tagName === 'SELECT' && (deger === '0' || deger === '')) { deger = ''; }
 			if (el.tagName === 'SELECT' && deger !== '' && !el.querySelector('option[value="' + CSS.escape(deger) + '"]')) {
@@ -660,6 +667,10 @@
 		dialog.classList.toggle('duzenleme', !!duzen);
 		if (duzen) { hepsi('input[data-ucret-alani]', dialog).forEach(function (x) { x.readOnly = true; }); }
 		hepsi('[data-odeme-sekli]', dialog).forEach(odemeSekli);
+		// KURAL: Pencere hazır değerlerle doldurulduğunda da alan gizleme kuralları yeniden işler.
+		hepsi('[data-pt-tur], [data-pt-ayrildi]', dialog).forEach(function (x) {
+			x.dispatchEvent(new Event('change', { bubbles: true }));
+		});
 	}
 
 	// KURAL: Şeritteki "Süzgeçler" düğmesi sayfadaki katlanır bölümü açıp kapatır — ayrı pencere açılmaz.
