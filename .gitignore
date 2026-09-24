@@ -1,0 +1,8 @@
+# KURAL: dagitim/ klasöründeki paket eklenti/ klasöründen üretilir — depoda ikinci bir kopyası tutulmaz.
+dagitim/
+
+# Yerel deneme ortamı ve tarayıcı çıktıları (pakete de depoya da girmez)
+test-ortami/
+onizleme/
+ekranlar/
+node_modules/
