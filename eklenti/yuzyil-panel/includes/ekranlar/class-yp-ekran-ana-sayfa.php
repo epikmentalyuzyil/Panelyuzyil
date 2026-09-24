@@ -36,6 +36,9 @@ final class YP_Ekran_Ana_Sayfa extends YP_Ekran {
 				self::serit_grubu( 'Kasa', array(
 					array( 'Kasa', array( 'ekran' => 'kasa' ), 'kasa' ),
 				) );
+				self::serit_grubu( 'Personel', array(
+					array( 'Personel Listesi', array( 'ekran' => 'personel' ), 'referans' ),
+				) );
 				self::serit_grubu( 'SMS', array(
 					array( 'Toplu SMS', array( 'ekran' => 'sms' ), 'sms' ),
 					array( 'Gönderim Geçmişi', array( 'ekran' => 'sms', 'sekme' => 'gecmis' ), 'liste' ),
@@ -95,6 +98,7 @@ final class YP_Ekran_Ana_Sayfa extends YP_Ekran {
 					self::karo( 'Aday Listesi', array( 'ekran' => 'adaylar' ), 'mavi', 'arama', (string) $aktif_aday, '', '', false, 'adaylar' );
 					self::karo( 'Raporlar', array( 'ekran' => 'raporlar' ), 'mavi', 'rapor', '', '', '', false, 'raporlar' );
 					self::karo( 'SMS Gönderimi', array( 'ekran' => 'sms' ), 'turuncu', 'sms', '', '', '', false, 'sms' );
+					self::karo( 'Personel', array( 'ekran' => 'personel' ), 'mor', 'referans', '', '', '', false, 'personel' );
 					self::karo( 'İşlem Günlüğü', array( 'ekran' => 'gunluk' ), 'gri', 'liste', '', '', '', false, 'gunluk' );
 					self::karo( 'Silinenler', array( 'ekran' => 'silinenler' ), 'gri', 'cop', '', '', '', false, 'silinenler' );
 					self::karo( 'Yedek Al', array( 'ekran' => 'yedek' ), 'yesil', 'kaydet', '', '', '', false, 'yedek' );

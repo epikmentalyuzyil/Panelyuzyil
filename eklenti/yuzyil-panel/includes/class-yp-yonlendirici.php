@@ -20,6 +20,7 @@ final class YP_Yonlendirici {
 		'gunluk'      => 'YP_Ekran_Gunluk',
 		'sms'         => 'YP_Ekran_Sms',
 		'yedek'       => 'YP_Ekran_Yedek',
+		'personel'    => 'YP_Ekran_Personel',
 		'yazdir'      => 'YP_Ekran_Yazdir',
 	);
 
@@ -66,6 +67,7 @@ final class YP_Yonlendirici {
 		// KURAL: SMS ekranı aday süzgeçlerini aday listesi ekranından kullanır — o dosya da yüklenir.
 		'sms'         => array( 'sms', 'adaylar' ),
 		'yedek'       => array( 'yedek' ),
+		'personel'    => array( 'personel' ),
 		// KURAL: Borç bakiye listesi kasa ekranının sorgusunu kullanır — kasa dosyası da yüklenir.
 		'yazdir'      => array( 'yazdir', 'kasa' ),
 	);
@@ -88,6 +90,10 @@ final class YP_Yonlendirici {
 		// KURAL: Yedekleme motoru yalnızca yedekleme ekranında yüklenir.
 		if ( 'yedek' === $ekran ) {
 			require_once YP_DIZIN . 'includes/class-yp-yedek.php';
+		}
+		// KURAL: Personel hesapları yalnızca personel ekranında yüklenir.
+		if ( 'personel' === $ekran ) {
+			require_once YP_DIZIN . 'includes/class-yp-personel.php';
 		}
 		// KURAL: SMS motoru yalnızca SMS ekranında ve ayar sayfasında yüklenir — diğer sayfaları ağırlaştırmaz.
 		if ( in_array( $ekran, array( 'sms', 'tanimlar' ), true ) ) {
@@ -113,6 +119,7 @@ final class YP_Yonlendirici {
 			'hesap_'      => 'tanimlar',
 			'ayar_'       => 'tanimlar',
 			'sms_'        => 'sms',
+			'personel_'   => 'personel',
 			'yedek_'      => 'yedek',
 			'geri_al_'    => 'silinenler',
 			'kalici_sil_' => 'silinenler',

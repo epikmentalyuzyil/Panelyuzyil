@@ -975,6 +975,31 @@
 		onayKutu.addEventListener('change', function () { dugme.disabled = !onayKutu.checked; });
 	})();
 
+	// ---- Personel pencereleri ----
+	// KURAL: Ayrılma tarihi yalnızca "işten ayrıldı" işaretliyken görünür; boş alan kafa karıştırmasın.
+	(function () {
+		hepsi('[data-pt-ayrildi]').forEach(function (kutu) {
+			var kap = kutu.closest('form');
+			if (!kap) { return; }
+			var alan = kap.querySelector('.pt-ayrilma');
+			if (!alan) { return; }
+			function yenile() { alan.classList.toggle('acik', kutu.checked); }
+			kutu.addEventListener('change', yenile);
+			yenile();
+		});
+
+		// KURAL: "Ait olduğu ay" yalnızca maaşta sorulur — avans ya da yol ücretinde anlamı yok.
+		hepsi('[data-pt-tur]').forEach(function (sec) {
+			var kap = sec.closest('form');
+			if (!kap) { return; }
+			var donem = kap.querySelector('.pt-donem');
+			if (!donem) { return; }
+			function yenile() { donem.style.display = sec.value === 'MAAS' ? '' : 'none'; }
+			sec.addEventListener('change', yenile);
+			yenile();
+		});
+	})();
+
 	// ---- Makbuz otomatik yazdırma ----
 	if (document.querySelector('[data-yazdir][data-otomatik]')) {
 		window.addEventListener('load', function () { window.print(); });

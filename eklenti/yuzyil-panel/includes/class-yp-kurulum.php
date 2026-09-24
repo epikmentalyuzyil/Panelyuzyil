@@ -57,6 +57,8 @@ final class YP_Kurulum {
 			'tanimlar'   => YP_Cekirdek::tablo( 'tanimlar' ),
 			'log'        => YP_Cekirdek::tablo( 'log' ),
 			'sms'        => YP_Cekirdek::tablo( 'sms' ),
+			'personel'   => YP_Cekirdek::tablo( 'personel' ),
+			'personel_odeme' => YP_Cekirdek::tablo( 'personel_odeme' ),
 		);
 
 		// KURAL: Tablolar arası bağ id sütunlarıyla kurulur ve kodda korunur — dbDelta yabancı anahtar desteklemez.
@@ -273,6 +275,60 @@ final class YP_Kurulum {
   KEY aday_id (aday_id),
   KEY zaman (olusturma),
   KEY durum_zaman (durum,olusturma)
+) $cs;";
+
+		// KURAL: Personel kayıtları aday tablolarından ayrıdır — iki liste birbirine karışmaz.
+		$sql[] = "CREATE TABLE {$t['personel']} (
+  id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  ad varchar(80) NOT NULL DEFAULT '',
+  soyad varchar(80) NOT NULL DEFAULT '',
+  tc_no varchar(11) DEFAULT NULL,
+  dogum_tarihi date DEFAULT NULL,
+  gorev varchar(80) DEFAULT NULL,
+  baslama_tarihi date DEFAULT NULL,
+  ayrilma_tarihi date DEFAULT NULL,
+  maas decimal(12,2) NOT NULL DEFAULT 0.00,
+  gsm varchar(20) DEFAULT NULL,
+  e_posta varchar(190) DEFAULT NULL,
+  adres varchar(300) DEFAULT NULL,
+  sgk_no varchar(40) DEFAULT NULL,
+  iban varchar(34) DEFAULT NULL,
+  notlar text,
+  aktif tinyint(1) NOT NULL DEFAULT 1,
+  silindi tinyint(1) NOT NULL DEFAULT 0,
+  silme_zamani datetime DEFAULT NULL,
+  silen bigint(20) unsigned DEFAULT NULL,
+  olusturan bigint(20) unsigned DEFAULT NULL,
+  olusturma datetime DEFAULT NULL,
+  guncelleyen bigint(20) unsigned DEFAULT NULL,
+  guncelleme datetime DEFAULT NULL,
+  PRIMARY KEY  (id),
+  KEY ad_soyad (soyad(40),ad(40)),
+  KEY durum (silindi,aktif),
+  KEY dogum (dogum_tarihi)
+) $cs;";
+
+		// KURAL: Maaş, avans, yol ve yemek kartı aynı tabloda "tur" sütunuyla ayrılır.
+		$sql[] = "CREATE TABLE {$t['personel_odeme']} (
+  id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  personel_id bigint(20) unsigned NOT NULL,
+  tur varchar(12) NOT NULL DEFAULT 'MAAS',
+  donem varchar(7) DEFAULT NULL,
+  tutar decimal(12,2) NOT NULL DEFAULT 0.00,
+  tarih date DEFAULT NULL,
+  hesap_id bigint(20) unsigned DEFAULT NULL,
+  hareket_id bigint(20) unsigned DEFAULT NULL,
+  aciklama varchar(250) DEFAULT NULL,
+  silindi tinyint(1) NOT NULL DEFAULT 0,
+  silme_zamani datetime DEFAULT NULL,
+  silen bigint(20) unsigned DEFAULT NULL,
+  olusturan bigint(20) unsigned DEFAULT NULL,
+  olusturma datetime DEFAULT NULL,
+  PRIMARY KEY  (id),
+  KEY personel (personel_id,silindi),
+  KEY tarih (tarih),
+  KEY donem (personel_id,tur,donem),
+  KEY hareket_id (hareket_id)
 ) $cs;";
 
 		foreach ( $sql as $s ) {
