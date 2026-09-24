@@ -85,6 +85,9 @@ function panelMi(url) {
     ...['islem_turu','gider_kalemi','gelir_kalemi','ozel_kod','evrak','hesaplar','ayarlar','guvenlik','referanslar']
       .map((b) => `?ekran=tanimlar&sekme=${b}`),
     ...['tumu','gelir','gider'].map((sk) => `?ekran=kasa&sekme=${sk}`),
+    '?ekran=sms', '?ekran=sms&sekme=gecmis', '?ekran=sms&uygula=1',
+    '?ekran=sms&uygula=1&odeme=borclu', '?ekran=sms&uygula=1&odeme=geciken',
+    '?ekran=yedek', '?ekran=tanimlar&sekme=sms',
   ].map((q) => KOK + PANEL_YOL + q);
 
   // Öncelik: 0 = ana ekran, 1 = aday/referans kartı, 2 = süzgeç, 3 = sıralama/sayfalama

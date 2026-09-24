@@ -14,6 +14,10 @@ Kurulum paketine (`.zip`) girmez.
 | `kimlikler.php` | Tarama betiklerinin kullanacağı örnek kayıt numaralarını verir |
 | `ekran-tarama.js` | 32 ekranı 1440×900, 1280×720 ve 375×812'de açar; HTTP durumu, JS hatası ve **taşma** ölçer, ekran görüntüsü alır |
 | `onizleme-aktar.js` | Panelin gerçek HTML çıktısını tıklanabilir, salt okunur bir önizlemeye dönüştürür |
+| `onizleme-denetim.js` | Dışa aktarılan önizlemenin her sayfasını açar; boş ekran, eksik dosya ve JS hatası arar |
+| `sms-testi.js` | SMS akışını uçtan uca dener: süzgeç, seçim, sayaç, onay, imza koruması, gönderim |
+| `yedek-testi.php` | Yedek al, veriyi boz, geri yükle; her tablonun birebir aynı geldiğini doğrular |
+| `yedek-ekran-testi.js` | Yedekleme ekranını tarayıcıda dener: indirme, dosya yükleme, inceleme, geri yükleme |
 
 ## Sıra
 
