@@ -47,6 +47,7 @@ const EKRANLAR = [
   ['29b-sms-liste', '?ekran=sms&uygula=1&odeme=borclu', 'SMS · Alıcı Listesi'],
   ['29c-sms-gecmis', '?ekran=sms&sekme=gecmis', 'SMS · Gönderim Geçmişi'],
   ['29d-sms-ayar', '?ekran=tanimlar&sekme=sms', 'Tanımlar · SMS Ayarları'],
+  ['29e-yedek', '?ekran=yedek', 'Yedekleme'],
   ['30-gunluk', '?ekran=gunluk', 'İşlem Günlüğü'],
   ['31-silinenler', '?ekran=silinenler', 'Silinenler'],
   ['32-makbuz', `?ekran=yazdir&tur=makbuz&id=${M}`, 'Tahsilat Makbuzu'],

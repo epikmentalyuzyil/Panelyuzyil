@@ -967,10 +967,10 @@
 		yenile();
 	})();
 
-	// ---- SMS son onay: kutu işaretlenmeden gönder düğmesi açılmaz ----
+	// ---- Son onay kutusu: işaretlenmeden düğme açılmaz (SMS ve yedekleme ortak) ----
 	(function () {
-		var onayKutu = document.querySelector('[data-sms-onay]');
-		var dugme = document.querySelector('[data-sms-gonder]');
+		var onayKutu = document.querySelector('[data-onay-kutu]');
+		var dugme = document.querySelector('[data-onay-dugme]');
 		if (!onayKutu || !dugme) { return; }
 		onayKutu.addEventListener('change', function () { dugme.disabled = !onayKutu.checked; });
 	})();

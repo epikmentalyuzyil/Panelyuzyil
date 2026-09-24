@@ -45,6 +45,35 @@ final class YP_Excel {
 		fclose( $cikti ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 	}
 
+	/**
+	 * Aynı Excel'i indirmek yerine içerik olarak döndürür — yedek paketine konur.
+	 * KURAL: Tarayıcıya hiçbir başlık gönderilmez; bu metot yalnızca dosya içeriği üretir.
+	 */
+	public static function icerik( array $basliklar, array $satirlar, array $turler = array(), $baslik = '' ) {
+		if ( ! class_exists( 'ZipArchive' ) ) {
+			return '';
+		}
+		if ( ! function_exists( 'wp_tempnam' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+		}
+		$gecici = wp_tempnam( 'yp-xlsx' );
+		$zip    = new ZipArchive();
+		if ( true !== $zip->open( $gecici, ZipArchive::OVERWRITE ) ) {
+			return '';
+		}
+		$zip->addFromString( '[Content_Types].xml', self::icerik_turleri() );
+		$zip->addFromString( '_rels/.rels', self::kok_iliskiler() );
+		$zip->addFromString( 'xl/workbook.xml', self::calisma_kitabi() );
+		$zip->addFromString( 'xl/_rels/workbook.xml.rels', self::kitap_iliskileri() );
+		$zip->addFromString( 'xl/styles.xml', self::stiller() );
+		$zip->addFromString( 'xl/worksheets/sheet1.xml', self::sayfa( $basliklar, $satirlar, $turler, $baslik ) );
+		$zip->close();
+
+		$icerik = file_get_contents( $gecici ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		wp_delete_file( $gecici );
+		return false === $icerik ? '' : $icerik;
+	}
+
 	private static function xlsx( $ad, array $basliklar, array $satirlar, array $turler, $baslik ) {
 		if ( ! function_exists( 'wp_tempnam' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/file.php';

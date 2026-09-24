@@ -41,6 +41,7 @@ final class YP_Ekran_Ana_Sayfa extends YP_Ekran {
 					array( 'Gönderim Geçmişi', array( 'ekran' => 'sms', 'sekme' => 'gecmis' ), 'liste' ),
 				) );
 				self::serit_grubu( 'Yönetim', array(
+					array( 'Yedek Al', array( 'ekran' => 'yedek' ), 'kaydet' ),
 					array( 'Tanımlar', array( 'ekran' => 'tanimlar' ), 'ayar' ),
 					array( 'İşlem Günlüğü', array( 'ekran' => 'gunluk' ), 'liste' ),
 					array( 'Silinenler', array( 'ekran' => 'silinenler' ), 'cop' ),
@@ -96,6 +97,7 @@ final class YP_Ekran_Ana_Sayfa extends YP_Ekran {
 					self::karo( 'SMS Gönderimi', array( 'ekran' => 'sms' ), 'turuncu', 'sms', '', '', '', false, 'sms' );
 					self::karo( 'İşlem Günlüğü', array( 'ekran' => 'gunluk' ), 'gri', 'liste', '', '', '', false, 'gunluk' );
 					self::karo( 'Silinenler', array( 'ekran' => 'silinenler' ), 'gri', 'cop', '', '', '', false, 'silinenler' );
+					self::karo( 'Yedek Al', array( 'ekran' => 'yedek' ), 'yesil', 'kaydet', '', '', '', false, 'yedek' );
 					self::karo( 'Tanımlar ve Ayarlar', array( 'ekran' => 'tanimlar' ), 'lacivert', 'ayar', '', '', 'karo-sag-alt', false, 'tanimlar' );
 					?>
 					<div class="karo-duzen-serit">
