@@ -13,6 +13,7 @@ final class YP_Ekran_Tanimlar extends YP_Ekran {
 			'hesap_kaydet' => 'hesap_kaydet',
 			'hesap_sil'    => 'hesap_sil',
 			'ayar_kaydet'  => 'ayar_kaydet',
+			'ayar_sms_kaydet' => 'sms_ayar_kaydet',
 		);
 	}
 
@@ -26,6 +27,7 @@ final class YP_Ekran_Tanimlar extends YP_Ekran {
 			'Tanımlar'         => array_merge( YP_Veri::tanim_turleri(), array( 'hesaplar' => 'Hesaplar (Kasa / Banka)' ) ),
 			'Kurum ve Ayarlar' => array(
 				'ayarlar'  => 'Kurum Bilgileri',
+				'sms'      => 'SMS Ayarları',
 				'guvenlik' => 'Panel Şifresi',
 			),
 			'Referanslar'      => array(
@@ -89,6 +91,8 @@ final class YP_Ekran_Tanimlar extends YP_Ekran {
 			self::hesaplar();
 		} elseif ( 'ayarlar' === $sekme ) {
 			self::ayarlar();
+		} elseif ( 'sms' === $sekme ) {
+			self::sms_ayarlari();
 		} elseif ( 'guvenlik' === $sekme ) {
 			self::guvenlik();
 		} elseif ( 'referanslar' === $sekme ) {
@@ -407,5 +411,60 @@ final class YP_Ekran_Tanimlar extends YP_Ekran {
 		) );
 		YP_Cekirdek::log( 'tanim', 0, 'ayar', 'Panel ayarları güncellendi.' );
 		self::geri_don( 'Ayarlar kaydedildi.' );
+	}
+
+	/**
+	 * SMS abone bilgileri.
+	 * KURAL: Şifre ekranda hiçbir zaman okunaklı yazılmaz; boş bırakılırsa kayıtlı şifre korunur.
+	 */
+	private static function sms_ayarlari() {
+		$a       = YP_Cekirdek::ayarlar();
+		$kurulu  = class_exists( 'YP_Sms' ) && YP_Sms::ayarlar_tamam();
+
+		echo '<section class="kutu"><h2>SMS abone bilgileri</h2>';
+		echo '<p class="soluk">Toplu mesajlar Netgsm aboneliğiniz üzerinden gönderilir. Buraya girdiğiniz bilgiler yalnızca bu panelde saklanır.</p>';
+
+		self::form_ac( 'ayar_sms_kaydet' );
+		echo '<div class="izgara">';
+		self::alan( 'sms_kullanici', 'Abone numarası (kullanıcı kodu)', (string) $a['sms_kullanici'], array( 'maxlength' => 40 ) );
+		self::alan( 'sms_sifre', 'Şifre' . ( '' !== (string) $a['sms_sifre'] ? ' (kayıtlı — değiştirmek için yazın)' : '' ), '', array( 'tur' => 'password', 'maxlength' => 60 ) );
+		self::alan( 'sms_baslik', 'Mesaj başlığı (onaylı gönderici adı)', (string) $a['sms_baslik'], array( 'maxlength' => 20 ) );
+		self::alan( 'sms_gunluk_sinir', 'Günlük en çok SMS (0 = sınırsız)', (string) (int) $a['sms_gunluk_sinir'], array( 'tur' => 'number', 'min' => 0, 'max' => 100000 ) );
+		echo '</div>';
+
+		echo '<label class="onay-satiri"><input type="checkbox" name="sms_aktif" value="1"' . checked( '1' === (string) $a['sms_aktif'], true, false ) . '> SMS gönderimi açık</label>';
+		echo '<label class="onay-satiri"><input type="checkbox" name="sms_turkce" value="1"' . checked( '1' === (string) $a['sms_turkce'], true, false ) . '> Yeni gönderimlerde "Türkçe karakter" kutusu işaretli gelsin</label>';
+
+		echo '<div class="form-dugmeler"><button type="submit" class="dugme ana">Kaydet</button></div></form>';
+
+		echo '<h3>Bağlantı denemesi</h3>';
+		echo '<p class="soluk">Bu düğme <strong>mesaj göndermez</strong>; yalnızca abone bilgilerinizin doğru olup olmadığını ve kalan kredinizi sorar.</p>';
+		if ( $kurulu ) {
+			self::form_ac( 'sms_dene', 'satir-ici' );
+			echo '<button type="submit" class="dugme">Bağlantıyı dene</button></form>';
+		} else {
+			echo '<p class="kirmizi">Önce abone numarası, şifre ve mesaj başlığı girilmeli.</p>';
+		}
+
+		echo '<h3>Mesaj başlığı hakkında</h3>';
+		echo '<p class="soluk">Mesaj başlığı, SMS\'in kimden geldiğini gösteren addır ve Netgsm tarafından önceden onaylanmış olmalıdır. Onaysız bir başlıkla gönderim reddedilir.</p>';
+		echo '</section>';
+	}
+
+	public static function sms_ayar_kaydet() {
+		$sifre  = YP_Guvenlik::metin( 'sms_sifre', 'post', 60 );
+		$kayitli = (string) YP_Cekirdek::ayar( 'sms_sifre' );
+		YP_Cekirdek::ayar_kaydet( array(
+			'sms_kullanici'    => YP_Guvenlik::metin( 'sms_kullanici', 'post', 40 ),
+			// KURAL: Şifre alanı boş gönderilirse eskisi korunur — kaydet'e basmak şifreyi silmez.
+			'sms_sifre'        => '' === $sifre ? $kayitli : $sifre,
+			'sms_baslik'       => YP_Guvenlik::metin( 'sms_baslik', 'post', 20 ),
+			'sms_gunluk_sinir' => min( 100000, max( 0, YP_Guvenlik::tamsayi( 'sms_gunluk_sinir' ) ) ),
+			'sms_aktif'        => isset( $_POST['sms_aktif'] ) ? 1 : 0, // phpcs:ignore WordPress.Security.NonceVerification -- nonce yönlendiricide doğrulandı.
+			'sms_turkce'       => isset( $_POST['sms_turkce'] ) ? 1 : 0, // phpcs:ignore WordPress.Security.NonceVerification -- nonce yönlendiricide doğrulandı.
+		) );
+		// KURAL: Günlüğe şifre yazılmaz — yalnızca ayarın değiştiği bilgisi tutulur.
+		YP_Cekirdek::log( 'tanim', 0, 'ayar', 'SMS ayarları güncellendi.' );
+		self::geri_don( 'SMS ayarları kaydedildi.' );
 	}
 }

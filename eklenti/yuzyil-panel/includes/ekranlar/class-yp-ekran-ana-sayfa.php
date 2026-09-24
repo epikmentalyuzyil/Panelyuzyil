@@ -36,6 +36,10 @@ final class YP_Ekran_Ana_Sayfa extends YP_Ekran {
 				self::serit_grubu( 'Kasa', array(
 					array( 'Kasa', array( 'ekran' => 'kasa' ), 'kasa' ),
 				) );
+				self::serit_grubu( 'SMS', array(
+					array( 'Toplu SMS', array( 'ekran' => 'sms' ), 'sms' ),
+					array( 'Gönderim Geçmişi', array( 'ekran' => 'sms', 'sekme' => 'gecmis' ), 'liste' ),
+				) );
 				self::serit_grubu( 'Yönetim', array(
 					array( 'Tanımlar', array( 'ekran' => 'tanimlar' ), 'ayar' ),
 					array( 'İşlem Günlüğü', array( 'ekran' => 'gunluk' ), 'liste' ),
@@ -89,6 +93,7 @@ final class YP_Ekran_Ana_Sayfa extends YP_Ekran {
 					self::karo( 'Kasa İşlemleri', array( 'ekran' => 'kasa' ), 'lacivert', 'kasa', '', '', '', false, 'kasa' );
 					self::karo( 'Aday Listesi', array( 'ekran' => 'adaylar' ), 'mavi', 'arama', (string) $aktif_aday, '', '', false, 'adaylar' );
 					self::karo( 'Raporlar', array( 'ekran' => 'raporlar' ), 'mavi', 'rapor', '', '', '', false, 'raporlar' );
+					self::karo( 'SMS Gönderimi', array( 'ekran' => 'sms' ), 'turuncu', 'sms', '', '', '', false, 'sms' );
 					self::karo( 'İşlem Günlüğü', array( 'ekran' => 'gunluk' ), 'gri', 'liste', '', '', '', false, 'gunluk' );
 					self::karo( 'Silinenler', array( 'ekran' => 'silinenler' ), 'gri', 'cop', '', '', '', false, 'silinenler' );
 					self::karo( 'Tanımlar ve Ayarlar', array( 'ekran' => 'tanimlar' ), 'lacivert', 'ayar', '', '', 'karo-sag-alt', false, 'tanimlar' );

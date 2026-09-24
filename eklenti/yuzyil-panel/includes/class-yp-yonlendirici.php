@@ -18,6 +18,7 @@ final class YP_Yonlendirici {
 		'tanimlar'    => 'YP_Ekran_Tanimlar',
 		'silinenler'  => 'YP_Ekran_Silinenler',
 		'gunluk'      => 'YP_Ekran_Gunluk',
+		'sms'         => 'YP_Ekran_Sms',
 		'yazdir'      => 'YP_Ekran_Yazdir',
 	);
 
@@ -61,6 +62,8 @@ final class YP_Yonlendirici {
 		'tanimlar'    => array( 'tanimlar', 'referanslar' ),
 		'silinenler'  => array( 'silinenler', 'kasa' ),
 		'gunluk'      => array( 'gunluk' ),
+		// KURAL: SMS ekranı aday süzgeçlerini aday listesi ekranından kullanır — o dosya da yüklenir.
+		'sms'         => array( 'sms', 'adaylar' ),
 		// KURAL: Borç bakiye listesi kasa ekranının sorgusunu kullanır — kasa dosyası da yüklenir.
 		'yazdir'      => array( 'yazdir', 'kasa' ),
 	);
@@ -79,6 +82,10 @@ final class YP_Yonlendirici {
 		// KURAL: Excel motoru yalnızca dışa aktarım yapan ekranlarda yüklenir.
 		if ( in_array( $ekran, array( 'raporlar', 'takip' ), true ) ) {
 			require_once YP_DIZIN . 'includes/class-yp-excel.php';
+		}
+		// KURAL: SMS motoru yalnızca SMS ekranında ve ayar sayfasında yüklenir — diğer sayfaları ağırlaştırmaz.
+		if ( in_array( $ekran, array( 'sms', 'tanimlar' ), true ) ) {
+			require_once YP_DIZIN . 'includes/class-yp-sms.php';
 		}
 		foreach ( self::$ekran_dosyalari[ $ekran ] as $dosya ) {
 			$yol = YP_DIZIN . 'includes/ekranlar/class-yp-ekran-' . $dosya . '.php';
@@ -99,6 +106,7 @@ final class YP_Yonlendirici {
 			'tanim_'      => 'tanimlar',
 			'hesap_'      => 'tanimlar',
 			'ayar_'       => 'tanimlar',
+			'sms_'        => 'sms',
 			'geri_al_'    => 'silinenler',
 			'kalici_sil_' => 'silinenler',
 		);

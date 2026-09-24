@@ -927,3 +927,86 @@ body.kilit-sayfa .uyari { width: min(420px, 100%); margin-inline: auto; }
 	.liste-govde { display: block; }
 	a { color: inherit; }
 }
+
+/* ---- SMS gönderim ekranı ------------------------------------------------ */
+/* KURAL: Süzgeç tek satırda başlar, dar ekranda alt alta iner — yatay taşma olmaz. */
+.sms-suzgec {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	gap: 10px 14px;
+	padding: 10px 14px;
+	background: var(--kutu);
+	border-bottom: 1px solid var(--cizgi);
+}
+.sms-suzgec .suzgec-alan { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.sms-suzgec label { font-size: 11px; letter-spacing: .02em; color: var(--yazi-2); }
+.sms-suzgec input[type="date"],
+.sms-suzgec select { height: 30px; padding: 0 6px; font-size: 13px; min-width: 150px; max-width: 220px; }
+.sms-suzgec .suzgec-dugmeler { display: flex; gap: 8px; align-items: center; margin-inline-start: auto; }
+
+.sms-duzen { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(320px, 1fr); gap: 12px; min-height: 0; }
+.sms-duzen > form { display: contents; }
+.sms-alicilar, .sms-mesaj { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+
+.sms-alici-basi { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 6px; }
+.sms-alici-basi h2 { margin: 0; }
+.sms-tumu { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+.sms-secili-sayi { font-size: 13px; color: var(--yazi-2); margin-inline-start: auto; }
+.sms-tablo { table-layout: fixed; width: 100%; }
+.sms-tablo .sms-kutu-sutun { width: 30px; text-align: center; }
+/* KURAL: Uzun işlem ve referans adları sütunu şişirip bakiyeyi kırpmasın — taşan ad üç noktayla kısalır. */
+.sms-tablo th:nth-child(2), .sms-tablo td:nth-child(2) { width: 58px; }
+.sms-tablo th:nth-child(4), .sms-tablo td:nth-child(4) { width: 124px; }
+.sms-tablo th:nth-child(7), .sms-tablo td:nth-child(7) { width: 92px; }
+.sms-tablo td:nth-child(3), .sms-tablo td:nth-child(5), .sms-tablo td:nth-child(6) {
+	overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.sms-tablo tbody tr:has(input:not(:checked)) { opacity: .45; }
+
+.sms-numarasiz { margin-top: 8px; font-size: 13px; }
+.sms-numarasiz summary { cursor: pointer; color: var(--yazi-2); }
+.sms-numarasiz ul { margin: 6px 0 0; padding-inline-start: 18px; max-height: 150px; overflow: auto; }
+
+.sms-mesaj textarea { width: 100%; resize: vertical; font: inherit; line-height: 1.45; }
+.sms-turkce { display: flex; align-items: flex-start; gap: 7px; margin-top: 9px; font-size: 13px; }
+.sms-sayac {
+	margin-top: 9px; padding: 8px 10px; border-radius: 3px;
+	background: var(--zemin); border: 1px solid var(--cizgi);
+	font-size: 13px; font-variant-numeric: tabular-nums;
+}
+.sms-sayac.asiyor { border-color: #b3261e; color: #b3261e; }
+.sms-gonder-satiri { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.dugme.buyuk { padding: 9px 20px; font-size: 15px; }
+
+/* ---- Son onay ekranı ---- */
+.sms-onay h3 { margin: 16px 0 6px; }
+.sms-ozet { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0 4px; }
+.sms-ozet-kutu {
+	display: flex; flex-direction: column; gap: 2px;
+	padding: 9px 14px; min-width: 130px;
+	background: var(--zemin); border: 1px solid var(--cizgi); border-radius: 3px;
+}
+.sms-ozet-kutu span { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--yazi-2); }
+.sms-ozet-kutu b { font-size: 18px; }
+.sms-onizleme {
+	margin: 0; padding: 12px 14px; white-space: pre-wrap; word-break: break-word;
+	background: var(--zemin); border: 1px solid var(--cizgi); border-radius: 3px;
+	font: inherit; line-height: 1.5;
+}
+.sms-alici-liste { max-height: 320px; }
+.sms-onay-kutu {
+	display: flex; align-items: flex-start; gap: 9px; margin: 14px 0 0;
+	padding: 11px 13px; border: 1px solid #d3a300; background: #fdf6e0; border-radius: 3px;
+}
+.sms-gecmis-metin { max-width: 420px; }
+.tek-aralik { font-variant-numeric: tabular-nums; }
+
+@media (max-width: 1100px) {
+	.sms-duzen { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 900px) {
+	.sms-suzgec .suzgec-dugmeler { margin-inline-start: 0; }
+	.sms-suzgec input[type="date"], .sms-suzgec select { max-width: none; width: 100%; min-width: 0; }
+	.sms-suzgec .suzgec-alan { flex: 1 1 140px; }
+}

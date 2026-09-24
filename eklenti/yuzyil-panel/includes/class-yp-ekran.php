@@ -445,6 +445,7 @@ if ( ! in_array( $govde_sinifi, array( 'yazdir', 'kilit-sayfa', 'anamenu' ), tru
 			'transfer'  => '<path d="M4 8.5h13M14 5.5l3 3-3 3"/><path d="M20 15.5H7M10 12.5l-3 3 3 3"/>',
 			'gider'     => '<circle cx="12" cy="12" r="8.2"/><path d="M8 12h8"/>',
 			'gelir'     => '<circle cx="12" cy="12" r="8.2"/><path d="M12 8v8M8 12h8"/>',
+			'sms'       => '<path d="M4.5 4.5h15A1.5 1.5 0 0 1 21 6v9a1.5 1.5 0 0 1-1.5 1.5H9L4.5 20.5V6a1.5 1.5 0 0 1 0-1.5z"/><path d="M8.5 9h7M8.5 12.5h4.5"/>',
 		);
 		$ic = isset( $yollar[ $ad ] ) ? $yollar[ $ad ] : $yollar['liste'];
 		return '<svg viewBox="0 0 24 24" width="' . (int) $boyut . '" height="' . (int) $boyut . '" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $ic . '</svg>';

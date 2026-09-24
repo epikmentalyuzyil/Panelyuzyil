@@ -894,6 +894,87 @@
 		});
 	});
 
+	// ---- SMS gönderim ekranı ----
+	// KURAL: Sayaç yalnızca bilgi verir; gönderilecek metnin son hâlini ve kişi sayısını sunucu yeniden hesaplar.
+	(function () {
+		var metinAlani = document.querySelector('[data-sms-metin]');
+		if (!metinAlani) { return; }
+
+		var turkceKutu = document.querySelector('[data-sms-turkce]');
+		var sayac = document.querySelector('[data-sms-sayac]');
+		var tumuKutu = document.querySelector('[data-sms-tumu]');
+		var kutular = hepsi('[data-sms-kutu]');
+		var seciliYazi = document.querySelector('[data-sms-secili-yazi]');
+
+		// Türkçe harfleri düz karşılığına çevirir — sunucudaki çizelgenin aynısı.
+		var CIZELGE = {
+			'ç': 'c', 'Ç': 'C', 'ğ': 'g', 'Ğ': 'G', 'ı': 'i', 'İ': 'I',
+			'ö': 'o', 'Ö': 'O', 'ş': 's', 'Ş': 'S', 'ü': 'u', 'Ü': 'U',
+			'â': 'a', 'Â': 'A', 'î': 'i', 'Î': 'I', 'û': 'u', 'Û': 'U'
+		};
+
+		function turkcesiz(metin) {
+			return metin.replace(/[çÇğĞıİöÖşŞüÜâÂîÎûÛ]/g, function (h) { return CIZELGE[h] || h; });
+		}
+
+		function seciliSayi() {
+			var n = 0;
+			kutular.forEach(function (k) { if (k.checked) { n++; } });
+			return n;
+		}
+
+		function yenile() {
+			var turkce = !!(turkceKutu && turkceKutu.checked);
+			var metin = metinAlani.value;
+			var sonMetin = turkce ? metin : turkcesiz(metin);
+			var uzunluk = sonMetin.length;
+			var tek = turkce ? 70 : 160;
+			var cok = turkce ? 67 : 153;
+			var parca = uzunluk === 0 ? 0 : (uzunluk <= tek ? 1 : Math.ceil(uzunluk / cok));
+			var kisi = seciliSayi();
+
+			if (seciliYazi) { seciliYazi.textContent = kisi + ' kişi seçili'; }
+			if (!sayac) { return; }
+
+			if (uzunluk === 0) {
+				sayac.textContent = 'Mesaj yazılmadı.';
+				sayac.classList.remove('asiyor');
+				return;
+			}
+			// KURAL: Metin DOM ile kurulur; kullanıcı verisi innerHTML ile basılmaz.
+			sayac.textContent = uzunluk + ' karakter · kişi başına ' + parca + ' SMS · '
+				+ kisi + ' kişi · toplam ' + (parca * kisi) + ' SMS kredisi';
+			sayac.classList.toggle('asiyor', parca > 1);
+		}
+
+		metinAlani.addEventListener('input', yenile);
+		if (turkceKutu) { turkceKutu.addEventListener('change', yenile); }
+
+		kutular.forEach(function (k) {
+			k.addEventListener('change', function () {
+				if (tumuKutu && !k.checked) { tumuKutu.checked = false; }
+				yenile();
+			});
+		});
+
+		if (tumuKutu) {
+			tumuKutu.addEventListener('change', function () {
+				kutular.forEach(function (k) { k.checked = tumuKutu.checked; });
+				yenile();
+			});
+		}
+
+		yenile();
+	})();
+
+	// ---- SMS son onay: kutu işaretlenmeden gönder düğmesi açılmaz ----
+	(function () {
+		var onayKutu = document.querySelector('[data-sms-onay]');
+		var dugme = document.querySelector('[data-sms-gonder]');
+		if (!onayKutu || !dugme) { return; }
+		onayKutu.addEventListener('change', function () { dugme.disabled = !onayKutu.checked; });
+	})();
+
 	// ---- Makbuz otomatik yazdırma ----
 	if (document.querySelector('[data-yazdir][data-otomatik]')) {
 		window.addEventListener('load', function () { window.print(); });

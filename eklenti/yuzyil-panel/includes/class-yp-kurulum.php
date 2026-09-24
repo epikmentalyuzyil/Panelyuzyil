@@ -56,6 +56,7 @@ final class YP_Kurulum {
 			'gorusmeler' => YP_Cekirdek::tablo( 'gorusmeler' ),
 			'tanimlar'   => YP_Cekirdek::tablo( 'tanimlar' ),
 			'log'        => YP_Cekirdek::tablo( 'log' ),
+			'sms'        => YP_Cekirdek::tablo( 'sms' ),
 		);
 
 		// KURAL: Tablolar arası bağ id sütunlarıyla kurulur ve kodda korunur — dbDelta yabancı anahtar desteklemez.
@@ -249,6 +250,29 @@ final class YP_Kurulum {
   PRIMARY KEY  (id),
   KEY zaman (zaman),
   KEY kayit (bolum,kayit_id)
+) $cs;";
+
+		// KURAL: Gönderilen her SMS satır satır saklanır — kime, ne zaman, hangi metin gittiği sonradan görülebilir.
+		$sql[] = "CREATE TABLE {$t['sms']} (
+  id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  toplu_id varchar(24) NOT NULL DEFAULT '',
+  aday_id bigint(20) unsigned DEFAULT NULL,
+  ad_soyad varchar(200) NOT NULL DEFAULT '',
+  telefon varchar(15) NOT NULL DEFAULT '',
+  mesaj text,
+  turkce tinyint(1) NOT NULL DEFAULT 0,
+  parca tinyint(3) unsigned NOT NULL DEFAULT 1,
+  durum varchar(12) NOT NULL DEFAULT 'BEKLIYOR',
+  saglayici_kod varchar(10) DEFAULT NULL,
+  saglayici_is_no varchar(40) DEFAULT NULL,
+  hata varchar(255) DEFAULT NULL,
+  olusturan bigint(20) unsigned DEFAULT NULL,
+  olusturma datetime DEFAULT NULL,
+  PRIMARY KEY  (id),
+  KEY toplu_id (toplu_id),
+  KEY aday_id (aday_id),
+  KEY zaman (olusturma),
+  KEY durum_zaman (durum,olusturma)
 ) $cs;";
 
 		foreach ( $sql as $s ) {

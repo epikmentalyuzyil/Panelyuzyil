@@ -31,6 +31,13 @@ final class YP_Cekirdek {
 			'kilit_kullanici'      => 'admin',
 			'kilit_hash'           => '',
 			'kilit_gun'            => 30,
+			// KURAL: SMS abone bilgileri ayarlarda durur — kodda hiçbir abone bilgisi yazmaz.
+			'sms_aktif'            => 0,
+			'sms_kullanici'        => '',
+			'sms_sifre'            => '',
+			'sms_baslik'           => '',
+			'sms_turkce'           => 0,
+			'sms_gunluk_sinir'     => 1000,
 		);
 	}
 
