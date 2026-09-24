@@ -95,7 +95,7 @@ function panelMi(url) {
     if (/arsiv=|odeme=|liste=|rapor=|sekme=|bas=|bit=/.test(a)) return 2;
     return 0;
   }
-  const PAY = { 0: 999, 1: 60, 2: 90, 3: 60 }; // her öncelikten en çok kaç sayfa
+  const PAY = { 0: 50, 1: 130, 2: 50, 3: 12 }; // her öncelikten en çok kaç sayfa
 
   const gorulen = new Set();
   const bekleyen = [[], [], [], []];
@@ -144,7 +144,7 @@ function panelMi(url) {
     var u = document.getElementById('onizleme-uyari'); if (u) { u.hidden = false; clearTimeout(u._z); u._z = setTimeout(function(){ u.hidden = true; }, 2600); }
   }, true);
   document.addEventListener('click', function(e){
-    var a = e.target.closest ? e.target.closest('a.onizleme-kapali') : null;
+    var a = e.target.closest ? e.target.closest('[data-kapali]') : null;
     if (a) { e.preventDefault();
       var u = document.getElementById('onizleme-uyari'); if (u) { u.hidden = false; clearTimeout(u._z); u._z = setTimeout(function(){ u.hidden = true; }, 2600); }
     }
@@ -153,7 +153,7 @@ function panelMi(url) {
 })();
 </script>
 <style>
-#onizleme-cubuk{position:fixed;left:10px;bottom:10px;z-index:99999;display:flex;gap:6px;align-items:center;font:500 11px/1 system-ui,sans-serif}
+#onizleme-cubuk{position:fixed;left:10px;bottom:38px;z-index:99999;display:flex;gap:6px;align-items:center;font:500 11px/1 system-ui,sans-serif}
 #onizleme-cubuk a{background:rgba(20,26,40,.82);color:#fff;text-decoration:none;padding:6px 10px;border-radius:999px;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.18)}
 #onizleme-cubuk a:hover{background:rgba(20,26,40,.95)}
 #onizleme-uyari{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;z-index:99999;background:#a3271b;color:#fff;padding:8px 14px;border-radius:4px;font:500 12px/1.3 system-ui,sans-serif;box-shadow:0 6px 20px -8px rgba(0,0,0,.6)}
@@ -167,28 +167,25 @@ function panelMi(url) {
   for (const s of sayfalar.values()) {
     let html = s.html;
 
-    // Varlık adresleri
+    // 1) Varlık adresleri yerel dosyalara
     html = html.replace(/https?:\/\/localhost:8765\/panel\/\?varlik=css[^"']*/g, 'varliklar/panel.css');
     html = html.replace(/https?:\/\/localhost:8765\/panel\/\?varlik=js[^"']*/g, 'varliklar/panel.js');
     html = html.replace(/https?:\/\/localhost:8765\/panel\/\?ekran=logo[^"']*/g, 'varliklar/minilogo.png');
 
-    // İç bağlantılar
-    html = html.replace(/href="([^"]+)"/g, (tam, ham) => {
+    // 2) Panel adresi taşıyan HER öznitelik çevrilir — href, data-git (JS ile açılan satırlar),
+    //    data-panel, value... Biri atlanırsa o bağlantı boş sayfa açar.
+    html = html.replace(/([a-zA-Z][a-zA-Z0-9-]*)="(https?:\/\/localhost:8765[^"]*)"/g, (tam, oznitelik, ham) => {
       const hedef = cozUrl(ham);
-      if (!hedef || !panelMi(hedef)) {
-        if (hedef && hedef.startsWith(KOK)) {
-          kapaliSayisi++;
-          return 'href="#" class="onizleme-kapali"';
-        }
-        return tam; // dış bağlantı (web sitesi vb.) olduğu gibi kalsın
-      }
-      const dosya = harita.get(anahtar(hedef));
-      if (dosya) return `href="${dosya}"`;
+      if (!hedef) return tam;
+      const dosya = panelMi(hedef) ? harita.get(anahtar(hedef)) : null;
+      if (dosya) return `${oznitelik}="${dosya}"`;
       kapaliSayisi++;
-      return 'href="#" class="onizleme-kapali"';
+      // KURAL: Kapatılan bağlantı "class" ile değil "data-kapali" ile işaretlenir —
+      // ikinci bir class özniteliği ögenin kendi biçimini iptal ediyordu.
+      return `${oznitelik}="#" data-kapali="1"`;
     });
 
-    // Form gönderimleri etkisiz
+    // 3) Form gönderimleri etkisiz
     html = html.replace(/action="[^"]*"/g, 'action="#"');
 
     html = html.replace(/<\/body>/i, ekBetik + '</body>');
